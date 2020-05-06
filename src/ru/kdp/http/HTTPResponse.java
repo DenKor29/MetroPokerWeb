@@ -10,7 +10,9 @@ public class HTTPResponse {
     private int status = 200;
 
     public HTTPResponse() {
-    setupResponses();
+
+        setupHeaders();
+        setupResponses();
 	}
 
     protected void SetResponseCode(int code){

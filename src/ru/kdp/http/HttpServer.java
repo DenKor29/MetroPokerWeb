@@ -17,14 +17,12 @@ import java.util.*;
 public class HttpServer  implements ApplicationServerListener,HTTPConnectionListener{
 
     private ApplicationServer app;
-    private ApplicationServerListener event;
-    private HttpServerListener eventhttp;
+    private HttpServerListener event;
     private ArrayList<HTTPConnection> connectionsRequest = new ArrayList<>();
 
 
-    public HttpServer(ApplicationServerListener eventListener,HttpServerListener httpServerListener) {
+    public HttpServer(HttpServerListener eventListener) {
        this.event = eventListener;
-       this.eventhttp = httpServerListener;
        app = new ApplicationServer(this,"Http Server");
 
     }
@@ -53,32 +51,35 @@ public class HttpServer  implements ApplicationServerListener,HTTPConnectionList
     }
     @Override
     public synchronized void onConnectionServer(ApplicationServer applicationServer) {
-        event.onConnectionServer(applicationServer);
+        event.onConnectionServer(this);
     }
 
     @Override
     public synchronized void onConnectionReady(ApplicationServer applicationServer, TCPConnection tcpConnection) {
-        connectionsRequest.add(new HTTPConnection(this,tcpConnection));
-        event.onConnectionReady(applicationServer,tcpConnection);
+       HTTPConnection httpConnection = new HTTPConnection(this,tcpConnection);
+        connectionsRequest.add(httpConnection);
+        event.onConnectionReady(this,httpConnection);
     }
 
     @Override
     public synchronized void onDisconnectionReady(ApplicationServer applicationServer, TCPConnection tcpConnection) {
-        event.onDisconnectionReady(applicationServer,tcpConnection);
 
         int index = GetIndexTCPConnection(tcpConnection);
-        if (index != -1) connectionsRequest.remove(index);
+        if (index != -1) {
+            event.onDisconnectionReady(this,connectionsRequest.get(index));
+            connectionsRequest.remove(index);
+        }
     }
 
     @Override
     public synchronized void onDisconnection(ApplicationServer applicationServer) {
-     event.onDisconnection(applicationServer);
+     event.onDisconnection(this);
 
     }
 
     @Override
     public synchronized void onException(ApplicationServer applicationServer, Exception e) {
-    event.onException(applicationServer,e);
+    event.onException(this,e);
     }
 
     @Override
@@ -106,7 +107,7 @@ public class HttpServer  implements ApplicationServerListener,HTTPConnectionList
 
 
         String path = httpRequest.GetPatch() ;
-        if (path.equals(httpRequest.wwwDir)) path += "index.html";
+        if (path.equals(HTTPRequest.wwwDir)) path += "index.html";
 
         File file = new File(path);
         HTTPResponse httpResponse = new HTTPResponse();
@@ -154,7 +155,6 @@ public class HttpServer  implements ApplicationServerListener,HTTPConnectionList
        if (ResponseTextBody.isEmpty()) httpConnection.sendBytes(ResponseBody);
        else httpConnection.sendString(ResponseTextBody);
        
-       eventhttp.onStatusServer(httpResponse.GetResponseCode());
        file = null;
        httpResponse = null;
     }
@@ -190,10 +190,10 @@ public class HttpServer  implements ApplicationServerListener,HTTPConnectionList
             reader = new BufferedReader(new InputStreamReader(
                             new FileInputStream(file), "UTF8"));
         } catch (UnsupportedEncodingException e) {
-           event.onException(app,e);
+           event.onException(this,e);
             return null;
         } catch (FileNotFoundException e) {
-            event.onException(app,e);
+            event.onException(this,e);
             return null;
         } ;
 
@@ -207,12 +207,12 @@ public class HttpServer  implements ApplicationServerListener,HTTPConnectionList
             }
             return stringBuilder.toString();
         } catch (IOException e) {
-            event.onException(app, e);
+            event.onException(this, e);
         } finally {
             try {
                 reader.close();
             } catch (IOException e) {
-                event.onException(app, e);
+                event.onException(this, e);
 
             }
         }

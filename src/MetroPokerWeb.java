@@ -1,3 +1,7 @@
+import ru.kdp.http.HTTPConnection;
+import ru.kdp.http.HttpServer;
+import ru.kdp.http.HttpServerListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
-public class MetroPokerWeb extends JFrame {
+public class MetroPokerWeb extends JFrame implements HttpServerListener {
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
@@ -20,7 +24,7 @@ public class MetroPokerWeb extends JFrame {
 
 
 
-
+   private HttpServer httpServer;
 
 
 
@@ -50,6 +54,8 @@ public class MetroPokerWeb extends JFrame {
         countRazdach = 0;
         countRazdach2 = 0;
 
+        httpServer = new HttpServer(this);
+        httpServer.start(9000);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WIDTH,HEIGHT);
@@ -720,5 +726,36 @@ public class MetroPokerWeb extends JFrame {
         }
 
         return null;
+    }
+
+
+    @Override
+    public void onReciveRequest(HTTPConnection htpConnection) {
+
+    }
+
+    @Override
+    public void onConnectionServer(HttpServer httpServer) {
+
+    }
+
+    @Override
+    public void onConnectionReady(HttpServer httpServer, HTTPConnection httpConnection) {
+
+    }
+
+    @Override
+    public void onDisconnectionReady(HttpServer httpServer, HTTPConnection httpConnection) {
+
+    }
+
+    @Override
+    public void onDisconnection(HttpServer httpServer) {
+
+    }
+
+    @Override
+    public void onException(HttpServer httpServer, Exception e) {
+
     }
 }

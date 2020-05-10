@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="libwebsocket-1.0" level="project" />
+    <orderEntry type="library" exported="" name="jlhttp-2.5" level="project" />
+    <orderEntry type="library" exported="" name="json-simple-1.1.1" level="project" />
   </component>
 </module>

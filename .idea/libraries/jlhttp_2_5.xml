@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jlhttp-2.5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/jlhttp-2.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -82,6 +82,8 @@ public class DeckOfCard {
                 int  num1 = (num == 0) ? 12 : num-1;
                 String name = faces[num1]+" "+ suits[suit];
                 deck[suit*cols+num1] = new Card(suit,num1,name,image);
+
+
             }
         }
         BufferedImage image2 = bigImage.getSubimage(
@@ -89,6 +91,14 @@ public class DeckOfCard {
                 getCoordinateY(4) ,
                 getWidth(2),
                 height );
+
+        File outputfile = new File("card.png");
+        try {
+            ImageIO.write(image2, "png", outputfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        };
+
 
         this.rubashka = new Card(4,2,"Рубашка",image2);
         prizCombination = new PrizCombination(0.6);
